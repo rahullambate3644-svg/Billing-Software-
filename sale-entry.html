@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Sale Entry Management</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* ===== BACKGROUND - Updated to Blue/Teal Theme ===== */
+body {
+  min-height: 100vh;
+  background: 
+    linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)),
+    linear-gradient(135deg, #001f3f, #005073, #007ea7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+}
+
+/* ===== CONTAINER ===== */
+.panel {
+  width: 100%;
+  max-width: 460px;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
+  padding: 30px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+}
+
+/* ===== HEADER ===== */
+.panel h1 {
+  text-align: center;
+  font-size: 26px;
+  letter-spacing: 1px;
+  margin-bottom: 5px;
+}
+
+.panel p {
+  text-align: center;
+  font-size: 14px;
+  color: #a0d8ef;
+  margin-bottom: 25px;
+}
+
+/* ===== BUTTON GRID ===== */
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+/* ===== ACTION BUTTONS ===== */
+.grid button {
+  padding: 16px;
+  border: none;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  color: white;
+  cursor: pointer;
+  background: linear-gradient(135deg, #007ea7, #00a8e8);
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  text-align: left;
+  padding-left: 25px;
+}
+
+.grid button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(0,168,232,0.4);
+  filter: brightness(1.1);
+}
+
+/* ===== BACK BUTTON ===== */
+.back-btn {
+  width: 100%;
+  margin-top: 20px;
+  padding: 12px;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 12px;
+  color: #eee;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.back-btn:hover {
+  background: rgba(255,255,255,0.2);
+}
+
+/* ===== MOBILE RESPONSIVENESS ===== */
+@media(max-width:480px) {
+  .panel {
+    margin: 20px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="panel">
+  <h1>Sale Entry</h1>
+  <p>Manage and track all sales transactions</p>
+
+  <div class="grid">
+    <button onclick="navigate('add-sale.html')">➕ Add New Sale</button>
+    <button onclick="navigate('modify-sale.html')">✏️ Modify Sale Entry</button>
+    <button onclick="navigate('delete-sale.html')">🗑️ Delete Sale Entry</button>
+    <button onclick="navigate('check-sero-group.html')">🔍 Check Sero Group Code Entry</button>
+    <button onclick="navigate('view-sale.html')">📊 View All Sale Data</button>
+    <button onclick="navigate('sale-return.html')">↙️ Sale Return Entry</button>
+  </div>
+
+  <button class="back-btn" onclick="goBack()">← Back to Dashboard</button>
+</div>
+
+<script>
+/* ===== SESSION PROTECTION ===== */
+if(localStorage.getItem("loggedIn") !== "true"){
+  window.location.href = "index.html";
+}
+
+/* ===== NAVIGATION LOGIC ===== */
+function navigate(url) {
+  setTimeout(() => {
+    window.location.href = url;
+  }, 150);
+}
+
+function goBack() {
+  window.location.href = "main.html";
+}
+</script>
+
+</body>
+</html>
