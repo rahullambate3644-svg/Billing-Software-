@@ -4,13 +4,19 @@
     <meta charset="UTF-8">
     <title>Print Invoice</title>
     <style>
+        /* --- ADJUSTABLE DIMENSIONS --- */
+        :root {
+            --bill-width: 155mm; /* Change this value to adjust horizontal width */
+            --item-row-height: 20px;
+        }
+
         body { font-family: 'Arial', sans-serif; padding: 0; margin: 0; background: white; color: black; }
         
-        /* Main Border for the full bill - Size Fixed */
+        /* Main Container - Width is now variable and height is reduced for 10 items */
         .p-container { 
             border: 1px solid black; 
             background: white; 
-            width: 148mm; 
+            width: var(--bill-width); 
             margin: auto; 
             padding: 0; 
             box-sizing: border-box;
@@ -38,18 +44,17 @@
         .p-logo-print { width: 60px; height: 60px; border-radius: 50%; }
         .p-cust-info { width: 40%; padding: 5px; }
         
-        /* FIXED ITEM SECTION - Reduced to fit 10 rows */
+        /* FIXED ITEM SECTION - Reduced min-height to fit exactly 10 rows */
         .item-section {
             min-height: 220px; 
             border-bottom: 1px solid black;
         }
         .full-a4 .item-section { min-height: 600px; }
 
-        /* Table styling - Removed default grid for empty rows */
+        /* Table styling */
         .p-table { width: 100%; border-collapse: collapse; }
-        .p-table th { border: 1px solid black; padding: 1px; text-align: center; font-size: 9px; height: 20px; background: #eee; }
-        /* Only cells with content will show borders via the JS logic below */
-        .p-table td { padding: 3px; text-align: center; font-size: 9px; height: 20px; border: none; }
+        .p-table th { border: 1px solid black; padding: 1px; text-align: center; font-size: 9px; height: var(--item-row-height); background: #eee; }
+        .p-table td { padding: 3px; text-align: center; font-size: 9px; height: var(--item-row-height); border: none; }
         .has-border td { border: 1px solid #d1d1d1; }
 
         .p-footer { display: flex; border-bottom: 1px solid black; }
@@ -66,7 +71,6 @@
         .p-words { 
             font-size: 9px; 
             text-transform: uppercase; 
-  
             padding: 20px;
             text-align: left;
             padding-left: 200px;
@@ -219,7 +223,7 @@
             const itemCount = data.items.length;
             const container = document.getElementById('printable-area');
 
-            // Limit changed to 10 for size consistency
+            // Threshold set to 10 items
             if (itemCount > 10) {
                 container.classList.add('full-a4');
             }
@@ -282,7 +286,7 @@
                 </tr>`;
             });
 
-            // FIXED LIMIT: Now adds empty rows up to 10
+            // Adjusted loop to fill up to exactly 10 rows
             if(itemCount < 10) {
                 for(let k = itemCount; k < 10; k++) {
                     rows += `<tr>
