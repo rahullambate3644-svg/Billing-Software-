@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Main Dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:Segoe UI, Arial;
+}
+
+/* ===== BACKGROUND ===== */
+body{
+  min-height:100vh;
+  background:
+    linear-gradient(rgba(0,0,0,.65),rgba(0,0,0,.65)),
+    linear-gradient(135deg,#2b000f,#5c0a2e,#8e1446);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  color:white;
+}
+
+/* ===== CONTAINER ===== */
+.dashboard{
+  width:100%;
+  max-width:420px;
+  background:rgba(0,0,0,.6);
+  border-radius:22px;
+  padding:25px;
+}
+
+/* ===== HEADER ===== */
+.dashboard h1{
+  text-align:center;
+  font-size:24px;
+}
+.dashboard p{
+  text-align:center;
+  font-size:13px;
+  color:#ffb3d9;
+  margin-bottom:25px;
+}
+
+/* ===== BUTTON GRID ===== */
+.menu{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:15px;
+}
+
+/* ===== BUTTON STYLE ===== */
+.menu button{
+  padding:16px;
+  border:none;
+  border-radius:16px;
+  font-size:17px;
+  font-weight:bold;
+  color:white;
+  cursor:pointer;
+  background:linear-gradient(135deg,#ff2f92,#ff7bbd);
+  box-shadow:0 10px 20px rgba(0,0,0,.3);
+}
+.menu button:hover{
+  opacity:.9;
+}
+
+/* ===== EXIT BUTTON ===== */
+.exit{
+  background:#555 !important;
+}
+
+/* ===== MOBILE ===== */
+@media(max-width:480px){
+  .dashboard{
+    margin:15px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="dashboard">
+  <h1>Shree Datarekha</h1>
+  <p>Billing & Distribution System</p>
+
+  <div class="menu">
+    <button onclick="go('master-entry.html')">Master Entry</button>
+    <button onclick="go('purchase-entry.html')">Purchase Entry</button>
+    <button onclick="go('sale-entry.html')">Sale Entry</button>
+    <button onclick="go('reports.html')">Reports</button>
+    <button onclick="go('calculator.html')">Calculator</button>
+    <button onclick="go('data-loader.html')">DATA LOADER</button>
+    <button class="exit" onclick="logout()">Exit</button>
+  </div>
+</div>
+
+<script>
+/* ===== SESSION PROTECTION ===== */
+if(localStorage.getItem("loggedIn") !== "true"){
+  window.location.href = "index.html";
+}
+
+/* ===== NAVIGATION ===== */
+function go(page){
+  window.location.href = page;
+}
+
+/* ===== LOGOUT ===== */
+function logout(){
+  localStorage.clear();
+  window.location.href = "index.html";
+}
+</script>
+
+</body>
+</html>
