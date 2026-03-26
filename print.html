@@ -6,7 +6,7 @@
     <style>
         /* --- ADJUSTABLE DIMENSIONS --- */
         :root {
-            --bill-width: 180mm; /* Change this value to adjust horizontal width */
+            --bill-width: 190mm; /* Change this value to adjust horizontal width */
             --item-row-height: 10px;
         }
 
@@ -40,7 +40,7 @@
         .p-top-bar .right { text-align: right; }
 
         .p-header { display: flex; border-bottom: 1px solid black; }
-        .p-comp-info { width: 60%; padding: 5px; border-right: 1px solid black; display: flex; gap: 8px; align-items: center; }
+        .p-comp-info { width: 75%; padding: 5px; border-right: 1px solid black; display: flex; gap: 8px; align-items: center; }
         .p-logo-print { width: 60px; height: 60px; border-radius: 50%; }
         .p-cust-info { width: 40%; padding: 5px; }
         
@@ -100,8 +100,8 @@
         <div class="p-header">
             <div class="p-comp-info">
                 <img src="eat.png" class="p-logo-print" onerror="this.style.display='none'">
-                <div>
-                    <h2 style="margin: 0; font-size: 14px;">SHREE DATTAREKHA ENTERPRISES</h2>
+                <div style="  padding-left: 70px;">
+                    <h2 style="margin: 0; font-size: 19px;">SHREE DATTAREKHA ENTERPRISES</h2>
                     <p style="font-size: 10px; margin-top: 4px; line-height: 1.2;">
                         Gunwadi Rd, Baramati<br>
                         Mob No: 9503984711 / 9075621737<br>
@@ -127,15 +127,15 @@
                 <thead>
                     <tr>
                         <th width="5">Sr.</th>
-                        <th width="200">Item Name </th>
+                        <th width="180">Item Name </th>
                         <th width="50">HSN</th>
                         <th width="5">Qty</th>
                         <th width="5">Free</th>
                         <th width="40">MRP</th>
                         <th width="40">Rate</th>
                         <th width="30">Disc</th> 
-                        <th class="tax-col" width="40">GST%</th>
-                        <th class="tax-col" width="50">GST Amt</th>
+                        <th class="tax-col" width="30">GST%</th>
+                        <th class="tax-col" width="40">GST Amt</th>
                         <th width="50">Amount</th>
                     </tr>
                 </thead>
