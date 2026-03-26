@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Shree Datarekha Enterprises | Enterprise Login</title>
+    <style>
+        :root {
+            --accent: #ff2f92;
+            --deep-wine: #4d001d;
+            --glass-bg: rgba(15, 0, 8, 0.8);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        /* ===== PHENOMENAL ANIMATED BACKGROUND ===== */
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #0f0005;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .bg-canvas {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 30%, #5c0a2e 0%, transparent 40%),
+                radial-gradient(circle at 80% 70%, #2b000f 0%, transparent 40%);
+            z-index: 1;
+        }
+
+        .float-icon {
+            position: absolute;
+            z-index: 2;
+            opacity: 0.2;
+            animation: float3D 10s infinite ease-in-out;
+            color: white;
+            font-size: 50px;
+        }
+
+        @keyframes float3D {
+            0%, 100% { transform: translate(0, 0) rotate(0deg) scale(1); }
+            33% { transform: translate(30px, -50px) rotate(10deg) scale(1.1); }
+            66% { transform: translate(-20px, 20px) rotate(-10deg) scale(0.9); }
+        }
+
+        .particle {
+            position: absolute;
+            background: var(--accent);
+            border-radius: 50%;
+            filter: blur(1px);
+            z-index: 2;
+            animation: moveParticle 15s infinite linear;
+        }
+
+        @keyframes moveParticle {
+            from { transform: translateY(100vh) translateX(0); opacity: 0; }
+            50% { opacity: 0.5; }
+            to { transform: translateY(-10vh) translateX(100px); opacity: 0; }
+        }
+
+        /* ===== LOGIN CARD: SUPREME UI ===== */
+        .login-card {
+            position: relative;
+            z-index: 10;
+            width: 92%;
+            max-width: 440px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 40px;
+            padding: 50px 35px;
+            box-shadow: 0 50px 100px rgba(0,0,0,0.8), 
+                        inset 0 0 30px rgba(255, 47, 146, 0.05);
+            text-align: center;
+            animation: cardAppear 1s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+
+        @keyframes cardAppear {
+            from { opacity: 0; transform: scale(0.9) translateY(40px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .shop-name {
+            font-size: clamp(20px, 5vw, 24px);
+            font-weight: 800;
+            white-space: nowrap;
+            letter-spacing: -0.5px;
+            margin-bottom: 5px;
+            background: linear-gradient(90deg, #fff, var(--accent), #fff);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shine 3s linear infinite;
+        }
+
+        @keyframes shine { to { background-position: 200% center; } }
+
+        .subtitle {
+            font-size: 12px;
+            color: rgba(255,255,255,0.5);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 40px;
+        }
+
+        /* ===== INPUT DESIGN ===== */
+        .field { margin-bottom: 20px; position: relative; }
+        .field input {
+            width: 100%;
+            padding: 20px 25px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            color: white;
+            font-size: 16px;
+            outline: none;
+            transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .field input:focus {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: var(--accent);
+            box-shadow: 0 0 25px rgba(255, 47, 146, 0.2);
+            transform: translateY(-2px);
+        }
+
+        /* ===== BUTTON ===== */
+        .btn-container { margin-top: 10px; position: relative; }
+        button {
+            width: 100%;
+            padding: 20px;
+            border: none;
+            border-radius: 20px;
+            background: linear-gradient(135deg, var(--accent), var(--deep-wine));
+            color: white;
+            font-size: 18px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: 0.3s ease;
+            box-shadow: 0 15px 35px rgba(255, 47, 146, 0.3);
+        }
+        button:hover { transform: translateY(-3px); box-shadow: 0 20px 40px rgba(255, 47, 146, 0.5); }
+        button:disabled { opacity: 0.6; cursor: not-allowed; }
+
+        .footer {
+            margin-top: 35px;
+            font-size: 10px;
+            color: rgba(255,255,255,0.3);
+            letter-spacing: 1px;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        @media (max-width: 480px) {
+            .login-card { padding: 40px 20px; }
+            .shop-name { font-size: 18px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-canvas"></div>
+
+    <div class="particle" style="width:5px; height:5px; left:10%; animation-delay:0s;"></div>
+    <div class="particle" style="width:3px; height:3px; left:30%; animation-delay:2s;"></div>
+    <div class="particle" style="width:7px; height:7px; left:70%; animation-delay:4s;"></div>
+    <div class="particle" style="width:4px; height:4px; left:90%; animation-delay:1s;"></div>
+
+    <div class="float-icon" style="top:10%; right:15%; font-size:40px;">📈</div>
+    <div class="float-icon" style="bottom:20%; left:10%; font-size:35px; animation-delay: -3s;">📦</div>
+
+    <div class="login-card" id="loginCard">
+        <div class="shop-name">SHREE DATAREKHA ENTERPRISES</div>
+        <div class="subtitle">Next-Gen Billing Solution</div>
+
+        <div class="field">
+            <input type="email" id="email" placeholder="Employee Email" autocomplete="email">
+        </div>
+
+        <div class="field">
+            <input type="password" id="password" placeholder="Access Key">
+        </div>
+
+        <div class="btn-container">
+            <button id="loginBtn">Enter Ecosystem</button>
+        </div>
+
+        <div class="footer">
+            EST. 2024 • ENCRYPTED GATEWAY • GLOBAL LOGISTICS
+        </div>
+    </div>
+
+    <script type="module">
+        import { auth } from './firebase-config.js';
+        import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+        const loginBtn = document.getElementById('loginBtn');
+        const emailInput = document.getElementById('email');
+        const passInput = document.getElementById('password');
+        const card = document.getElementById('loginCard');
+
+        async function handleLogin() {
+            const email = emailInput.value.trim();
+            const password = passInput.value.trim();
+
+            if (!email || !password) {
+                triggerError("Please enter credentials");
+                return;
+            }
+
+            // UI Feedback
+            loginBtn.disabled = true;
+            loginBtn.innerHTML = "AUTHORIZING ACCESS...";
+            loginBtn.style.background = "linear-gradient(135deg, #00ff88, #007ea7)";
+            loginBtn.style.color = "#000";
+
+            try {
+                // Real Firebase Authentication
+                await signInWithEmailAndPassword(auth, email, password);
+                
+                // Success
+                localStorage.setItem("loggedIn", "true");
+                setTimeout(() => {
+                    window.location.href = "main.html";
+                }, 800);
+
+            } catch (error) {
+                // Error Animation
+                triggerError("ACCESS DENIED: Unauthorized Credentials");
+                console.error(error.code);
+                
+                // Reset Button
+                loginBtn.disabled = false;
+                loginBtn.innerHTML = "Enter Ecosystem";
+                loginBtn.style.background = "";
+                loginBtn.style.color = "";
+            }
+        }
+
+        function triggerError(msg) {
+            card.style.animation = "shake 0.4s";
+            setTimeout(() => card.style.animation = "cardAppear 1s", 400);
+            alert(msg);
+        }
+
+        // Event Listeners
+        loginBtn.addEventListener('click', handleLogin);
+        document.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') handleLogin();
+        });
+    </script>
+</body>
+</html>
