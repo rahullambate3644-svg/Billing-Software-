@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add New Sale | Shree Datarekha Enterprises</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        :root {
+            --primary: #007ea7;
+            --secondary: #001f3f;
+            --accent: #10b981;
+            --bg: #0b0f19;
+        }
+        * { margin:0; padding:0; box-sizing:border-box; font-family: 'Segoe UI', sans-serif; }
+        body { background: var(--bg); color: white; padding: 10px; min-height: 100vh; }
+
+        .header-section { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 12px; border-left: 5px solid var(--primary); }
+        
+        .party-info { display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap; }
+        .input-group { flex: 1; display: flex; flex-direction: column; min-width: 250px; }
+        
+        .input-group label { font-size: 12px; color: #a0d8ef; margin-bottom: 5px; }
+        select, input { padding: 12px; border-radius: 8px; border: 1px solid #334155; background: #1e293b; color: white; outline: none; transition: 0.3s; width: 100%; }
+        input:focus { border-color: var(--primary); }
+        
+        .table-container { overflow-x: auto; background: #1e293b; border-radius: 12px; margin-bottom: 20px; }
+        table { width: 100%; border-collapse: collapse; min-width: 1250px; }
+        th { background: #334155; padding: 12px; font-size: 13px; color: #a0d8ef; text-align: left; }
+        td { padding: 8px; border-bottom: 1px solid #334155; }
+        .row-input { width: 100%; background: transparent; border: none; color: white; }
+
+        .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; background: rgba(0,0,0,0.3); padding: 20px; border-radius: 12px; border: 1px solid #334155; }
+        .summary-box { border-bottom: 1px solid #334155; padding-bottom: 5px; }
+        .summary-box span { display: block; font-size: 11px; color: #94a3b8; }
+        .summary-box strong { font-size: 18px; color: #10b981; }
+
+        .actions { display: flex; flex-wrap: wrap; gap: 10px; margin: 20px 0; align-items: flex-end; }
+        button { padding: 12px 24px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; transition: 0.2s; }
+        .btn-save { background: #10b981; color: white; }
+        .btn-new { background: #007ea7; color: white; }
+        .btn-print { background: #f59e0b; color: white; }
+        .btn-back { background: #334155; color: white; text-decoration: none; padding: 12px 24px; border-radius: 8px; display: inline-block; }
+
+        /* MODAL STYLES */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background: #1e293b;
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            border: 1px solid var(--primary);
+            box-shadow: 0 0 30px rgba(0,126,167,0.3);
+        }
+        .modal-btns { display: flex; gap: 15px; margin-top: 20px; }
+        .btn-thermal { background: #7c3aed; color: white; }
+        .btn-normal { background: #007ea7; color: white; }
+    </style>
+</head>
+<body>
+
+<datalist id="customerList"></datalist>
+<datalist id="itemList"></datalist>
+
+<div id="printModal" class="modal-overlay">
+    <div class="modal-content">
+        <h3>Select Print Format</h3>
+        <p style="margin: 10px 0; color: #94a3b8;">Choose how you want to print the bill</p>
+        <div class="modal-btns">
+            <button class="btn-thermal" onclick="window.finalPrint('thermal.html')">Thermal Bill</button>
+            <button class="btn-normal" onclick="window.finalPrint('print.html')">Normal Bill</button>
+        </div>
+    </div>
+</div>
+
+<div class="header-section">
+    <div>
+        <h2 style="color: var(--primary);">Sale Entry</h2>
+        <div style="margin-top: 10px;">
+            <label style="font-size: 12px; color: #a0d8ef;">Tax Mode:</label>
+            <select id="taxMode" onchange="window.handleTaxModeChange()" style="width: auto; padding: 5px; height: 30px;">
+                <option value="WITH_GST">Tax Invoice (GST)</option>
+                <option value="WITHOUT_GST">Cash Memo (Non-GST)</option>
+            </select>
+        </div>
+    </div>
+    <div style="text-align: right;">
+        <span style="color: #a0d8ef;">Bill No.</span>
+        <h2 id="billNo">1</h2>
+    </div>
+</div>
+
+<div class="party-info">
+    <div class="input-group">
+        <label>Customer Name (Search)</label>
+        <input type="text" id="partySearch" list="customerList" placeholder="Search customer..." oninput="window.updatePartyDetails()">
+    </div>
+    <div class="input-group" style="flex: 2;">
+        <label>Customer Details (GST | Contact | Address)</label>
+        <input type="text" id="partyMeta" readonly placeholder="Auto-fed details">
+    </div>
+    <div class="input-group" style="flex: 0.5; min-width: 150px;">
+        <label>Date</label>
+        <input type="date" id="saleDate">
+    </div>
+</div>
+
+<div class="table-container">
+    <table id="saleTable">
+        <thead>
+            <tr>
+                <th width="40">Sr.</th>
+                <th width="150">Item Group</th>
+                <th>Item Name</th>
+                <th width="90">MRP</th>
+                <th width="90">Rate</th>
+                <th width="70">Disc%</th>
+                <th width="85">Schm(₹)</th>
+                <th width="70">Qty</th>
+                <th width="80">GST%</th>
+                <th width="110">Net Amount</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+    </table>
+</div>
+
+<button onclick="addRow()" style="background:#334155; color:white; margin-bottom:15px; padding: 10px 20px; border-radius: 8px; cursor: pointer;">+ Add Item</button>
+
+<div class="summary-grid">
+    <div class="summary-box"><span>Gross Total</span><strong id="sumTotalSale">0.00</strong></div>
+    <div class="summary-box"><span>Total Disc</span><strong id="sumTotalDisc">0.00</strong></div>
+    <div class="summary-box"><span>Total GST</span><strong id="sumGST">0.00</strong></div>
+    <div class="summary-box"><span>Net Total</span><strong id="sumNet">0.00</strong></div>
+    <div class="summary-box"><span>Balance</span><strong id="sumBalance">0.00</strong></div>
+</div>
+
+<div class="actions">
+    <a href="sale-entry.html" class="btn-back">Back</a>
+    <div class="input-group" style="width: 150px; flex: none;">
+        <label>Paid Amount</label>
+        <input type="number" id="paidAmt" placeholder="0.00" oninput="calculateFinal()">
+    </div>
+    <button class="btn-new" onclick="location.reload()">New</button>
+    <button class="btn-save" onclick="saveSale(false)">Save Only</button>
+    <button class="btn-print" onclick="saveSale(true)">Save & Print</button>
+</div>
+
+<script type="module">
+import { db } from './firebase-config.js';
+import { collection, addDoc, getDocs, query, orderBy, limit, serverTimestamp, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+let customers = [];
+let items = [];
+
+async function init() {
+    try {
+        const cSnap = await getDocs(collection(db, "customers"));
+        customers = cSnap.docs.map(d => ({id: d.id, ...d.data()}));
+        const cList = document.getElementById('customerList');
+        customers.forEach(c => {
+            let opt = document.createElement('option');
+            opt.value = c.name;
+            cList.appendChild(opt);
+        });
+
+        const iSnap = await getDocs(collection(db, "items"));
+        items = iSnap.docs.map(d => ({id: d.id, ...d.data()}));
+        const iList = document.getElementById('itemList');
+        items.forEach(item => {
+            let opt = document.createElement('option');
+            opt.value = item.name;
+            iList.appendChild(opt);
+        });
+
+        const q = query(collection(db, "sales"), orderBy("createdAt", "desc"), limit(1));
+        const lastS = await getDocs(q);
+        if (!lastS.empty) {
+            const lastVal = lastS.docs[0].data().billNo;
+            document.getElementById('billNo').innerText = (parseInt(lastVal) || 0) + 1;
+        }
+        
+        document.getElementById('saleDate').valueAsDate = new Date();
+        window.addRow();
+    } catch (e) { console.error("Init Error:", e); }
+}
+
+window.updatePartyDetails = function() {
+    const val = document.getElementById('partySearch').value;
+    const c = customers.find(x => x.name === val);
+    if(c) {
+        document.getElementById('partyMeta').value = `${c.gst || 'URD'} | Contact: ${c.contact || 'NA'} | ${c.address1 || ''}`;
+    }
+};
+
+window.addRow = function() {
+    const tbody = document.getElementById('tableBody');
+    const rowCount = tbody.rows.length + 1;
+    const row = tbody.insertRow();
+    row.innerHTML = `
+        <td>${rowCount}</td>
+        <td><input type="text" class="row-input i-group" placeholder="Group" readonly tabindex="-1"></td>
+        <td><input type="text" class="row-input i-name" list="itemList" oninput="window.autoFillByName(this)"></td>
+        <td><input type="number" class="row-input mrp" value="0" readonly></td>
+        <td><input type="number" class="row-input rate" value="0" data-base-rate="0" oninput="window.calculateFinal()"></td>
+        <td><input type="number" class="row-input disc" value="0" oninput="window.calculateFinal()"></td>
+        <td><input type="number" class="row-input schm" value="0" oninput="window.calculateFinal()"></td>
+        <td><input type="number" class="row-input qty" value="1" oninput="window.calculateFinal()"></td>
+        <td><input type="number" class="row-input gst" value="0" oninput="window.calculateFinal()"></td>
+        <td><input type="number" class="row-input net" value="0.00" readonly style="font-weight:bold;"></td>
+    `;
+};
+
+window.autoFillByName = function(input) {
+    const row = input.closest('tr');
+    const item = items.find(i => i.name === input.value);
+    const mode = document.getElementById('taxMode').value;
+    if(item) {
+        const baseRate = item.sale || 0;
+        const gstPerc = item.gst || 0;
+        row.querySelector('.i-group').value = item.group || ''; 
+        row.querySelector('.mrp').value = item.mrp || 0;
+        row.querySelector('.gst').value = gstPerc;
+        row.querySelector('.rate').dataset.baseRate = baseRate;
+        
+        if(mode === "WITHOUT_GST") {
+            row.querySelector('.rate').value = (baseRate * (1 + gstPerc/100)).toFixed(2);
+        } else {
+            row.querySelector('.rate').value = baseRate;
+        }
+        window.calculateFinal();
+    }
+};
+
+window.handleTaxModeChange = function() {
+    document.querySelectorAll('#tableBody tr').forEach(row => {
+        const baseRate = parseFloat(row.querySelector('.rate').dataset.baseRate) || 0;
+        const gstPerc = parseFloat(row.querySelector('.gst').value) || 0;
+        const mode = document.getElementById('taxMode').value;
+        if(mode === "WITHOUT_GST") {
+            row.querySelector('.rate').value = (baseRate * (1 + gstPerc/100)).toFixed(2);
+        } else {
+            row.querySelector('.rate').value = baseRate;
+        }
+    });
+    window.calculateFinal();
+};
+
+window.calculateFinal = function() {
+    let tGross = 0, tDisc = 0, tGst = 0, tNet = 0;
+    const mode = document.getElementById('taxMode').value;
+    document.querySelectorAll('#tableBody tr').forEach(row => {
+        const displayedRate = parseFloat(row.querySelector('.rate').value) || 0;
+        const qty = parseFloat(row.querySelector('.qty').value) || 0;
+        const dPerc = parseFloat(row.querySelector('.disc').value) || 0;
+        const schmAmt = parseFloat(row.querySelector('.schm').value) || 0; // The fixed "Schme" amount
+        const gPerc = parseFloat(row.querySelector('.gst').value) || 0;
+        
+        let rowNet = 0, rowGross = 0, rowGst = 0, rowDisc = 0;
+
+        // Formula Logic:
+        // 1. Calculate Gross (Rate * Qty)
+        // 2. Calculate Discount (Gross * Disc%)
+        // 3. Subtract Schme (Fixed amount per qty)
+        
+        if (mode === "WITHOUT_GST") {
+            const subtotal = displayedRate * qty;
+            rowDisc = (subtotal * (dPerc/100)) + (schmAmt * qty);
+            rowNet = subtotal - rowDisc;
+            rowGross = subtotal; 
+            const baseValue = subtotal / (1 + gPerc/100);
+            rowGst = subtotal - baseValue;
+        } else {
+            const subtotal = displayedRate * qty;
+            rowDisc = (subtotal * (dPerc/100)); // Percentage discount
+            const afterDisc = subtotal - rowDisc;
+            const taxable = afterDisc - (schmAmt * qty); // Subtract Scheme after discount
+            rowGst = taxable * (gPerc/100);
+            rowNet = taxable + rowGst;
+            rowGross = subtotal;
+            // Total discount for summary includes Scheme
+            rowDisc += (schmAmt * qty); 
+        }
+
+        row.querySelector('.net').value = rowNet.toFixed(2);
+        tGross += rowGross;
+        tDisc += rowDisc;
+        tGst += rowGst;
+        tNet += rowNet;
+    });
+
+    document.getElementById('sumTotalSale').innerText = tGross.toFixed(2);
+    document.getElementById('sumTotalDisc').innerText = tDisc.toFixed(2);
+    document.getElementById('sumGST').innerText = (mode === "WITHOUT_GST") ? "0.00" : tGst.toFixed(2);
+    const finalRounded = Math.round(tNet);
+    document.getElementById('sumNet').innerText = finalRounded.toFixed(2);
+    const paid = parseFloat(document.getElementById('paidAmt').value) || 0;
+    document.getElementById('sumBalance').innerText = (finalRounded - paid).toFixed(2);
+};
+
+window.finalPrint = function(page) {
+    window.open(page, '_blank');
+    location.reload();
+}
+
+window.saveSale = async function(shouldPrint = false) {
+    const partyName = document.getElementById('partySearch').value;
+    if(!partyName) return alert("Select a Customer!");
+    const billItems = [];
+    document.querySelectorAll('#tableBody tr').forEach(row => {
+        const name = row.querySelector('.i-name').value;
+        if(name) {
+            const mode = document.getElementById('taxMode').value;
+            const dispRate = parseFloat(row.querySelector('.rate').value) || 0;
+            const qty = parseFloat(row.querySelector('.qty').value) || 0;
+            const gstP = parseFloat(row.querySelector('.gst').value) || 0;
+            let reportGstAmt = 0;
+            if(mode === "WITHOUT_GST") {
+                const total = dispRate * qty;
+                reportGstAmt = total - (total / (1 + gstP/100));
+            } else {
+                const disc = (dispRate * qty) * (parseFloat(row.querySelector('.disc').value)/100);
+                const schm = parseFloat(row.querySelector('.schm').value) || 0;
+                reportGstAmt = (dispRate * qty - disc - (schm * qty)) * (gstP/100);
+            }
+            billItems.push({
+                group: row.querySelector('.i-group').value,
+                name: name,
+                qty: qty,
+                rate: dispRate,
+                mrp: row.querySelector('.mrp').value,
+                disc: row.querySelector('.disc').value,
+                schm: row.querySelector('.schm').value,
+                gst: gstP,
+                gstAmt: reportGstAmt.toFixed(2),
+                net: row.querySelector('.net').value
+            });
+        }
+    });
+
+    const saleData = {
+        billNo: document.getElementById('billNo').innerText,
+        customerName: partyName,
+        taxMode: document.getElementById('taxMode').value,
+        custMeta: document.getElementById('partyMeta').value,
+        date: document.getElementById('saleDate').value,
+        items: billItems,
+        summary: {
+            gross: document.getElementById('sumTotalSale').innerText,
+            disc: document.getElementById('sumTotalDisc').innerText,
+            gst: calculateTotalGstInternal(),
+            net: document.getElementById('sumNet').innerText
+        },
+        createdAt: serverTimestamp()
+    };
+
+    try {
+        const docRef = await addDoc(collection(db, "sales"), saleData);
+        await setDoc(doc(db, "tax_invoices", docRef.id), saleData);
+
+        if (shouldPrint) {
+            localStorage.setItem("lastBill", JSON.stringify(saleData));
+            document.getElementById('printModal').style.display = 'flex';
+        } else {
+            alert("Success! Saved for Tax Reports.");
+            location.reload();
+        }
+    } catch (e) { alert("Error: " + e.message); }
+};
+
+function calculateTotalGstInternal() {
+    let total = 0;
+    document.querySelectorAll('#tableBody tr').forEach(row => {
+        const mode = document.getElementById('taxMode').value;
+        const rate = parseFloat(row.querySelector('.rate').value) || 0;
+        const qty = parseFloat(row.querySelector('.qty').value) || 0;
+        const gP = parseFloat(row.querySelector('.gst').value) || 0;
+        const schm = parseFloat(row.querySelector('.schm').value) || 0;
+        if(mode === "WITHOUT_GST") {
+            const rowVal = rate * qty;
+            total += (rowVal - (rowVal / (1 + gP/100)));
+        } else {
+            const sub = rate * qty;
+            const disc = sub * (parseFloat(row.querySelector('.disc').value)/100);
+            total += (sub - disc - (schm * qty)) * (gP/100);
+        }
+    });
+    return total.toFixed(2);
+}
+
+init();
+</script>
+</body>
+</html>
